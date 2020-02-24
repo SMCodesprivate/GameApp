@@ -1,0 +1,6 @@
+#player {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    transition: .5s all linear;
+}

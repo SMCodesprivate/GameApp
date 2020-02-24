@@ -1,54 +1,48 @@
 import React, { useEffect, useState } from 'react';
 
+import starterCloudAnime from '../../utils/starterCloudAnime';
+import generateCloud from '../../utils/generateCloud';
+import getX from '../../utils/getX';
+
+import Player from '../Player/';
+
 import './style.css';
 
 export default function Background() {
-	const [clouds, setClouds] = useState([]);
-	const [generate, setGenerate] = useState(0);
-	var o = 0;
+    const [clouds, setClouds] = useState([]);
+    const [generate, setGenerate] = useState([]);
+    
+    const calc = ((window.innerWidth-1340)/2);
+    const calcHeight = ((window.innerHeight-700)/2);
 
-	function getX() {
-		var x = Math.floor(Math.random() * (window.innerWidth - 100));
-		return x;
-	}
-	function init() {
-		setTimeout(() => {
-			o++;
-			var list = [];
-			for(var count = 0;count <= 1;count++) {
-				list.push({ x: getX(), y: -100, key: o });
-			}
-			list.map(l => {
-				setClouds([...clouds, l]);
-				return clouds;
-			});
-		}, 250);
-		setTimeout(() => {
-			var cloudsList = document.getElementsByClassName('cloud');
-			for(var ctn = 0;ctn <= cloudsList.length-1;ctn++) {
-				let cloud = cloudsList[ctn];
-				cloud.style.transition = 'all linear 10s';
-				cloud.style.setProperty('top', (window.innerHeight+100)+'px');
-				setTimeout(() => {
-					cloud.remove();
-				}, 10000);
-			}
-		}, 350);
-		setTimeout(() => {
-			if(generate === 0) {
-				setGenerate(1);
-			} else {
-				setGenerate(0);
-			}
-		}, 800);
-	}
-	useEffect(() => init(), [generate]);
+	useEffect(() => {
+        var index = 0;
+        setInterval(() => {
+            var cd = { x: getX(calc), y: calcHeight, key: index };
+            var list = clouds;
+            list.push(cd);
+            setClouds([...clouds, list]);
+            console.log(clouds);
+            starterCloudAnime(index);
+            // setTimeout(() => {
+            //     setClouds(clouds.filter(item => item.key !== cd.key));
+            // }, 750);
+            index++;
+        }, 1250);
+    }, []);
 
-  return (
-    <div id="back">
-		{clouds.map(cloud => (
-			<img key={cloud.x+":"+cloud.y+":"+cloud.key} src='/images/cloud.webp' className='cloud' style={{ left: cloud.x, top: cloud.y }} alt='images' />
-		))}
-    </div>
-  );
+
+
+    return (
+        <div id='back'>
+            <div id='clouds'>
+                {clouds.map(cloud => (
+                    <img key={cloud.x+':'+cloud.y+':'+cloud.key} src='/images/cloud.webp' className='cloud' style={{ left: cloud.x, top: cloud.y, opacity: 0 }} id={'cloud_'+cloud.key} alt='images' />
+                ))}
+            </div>
+            <div id='base'>
+                <Player />
+            </div>
+        </div>
+    );
 }
